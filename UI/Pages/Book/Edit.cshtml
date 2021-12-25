@@ -1,0 +1,53 @@
+﻿@page
+@model UI.Pages.Book.EditModel
+@{
+}
+<h4>Books</h4>
+<hr />
+<div class="row">
+    <div class="col-md-5">
+        <form method="post" enctype="multipart/form-data" runat="server" >
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type ="hidden" asp-for="FormBook.Id" />
+            <input type ="hidden" asp-for="FormBook.Cover" />
+            <div class="form-group">
+                <label asp-for="FormBook.Author" class="control-label"></label>
+                <select asp-for="SelectedAuthor" class="form-control" asp-items="@Model.AuthorSelect">
+                </select>
+                <span asp-validation-for="FormBook.Author" class="text-danger" />
+                @if (TempData["AuthorError"] != null)
+                {
+                    <div class="alert alert-danger" role="alert">@TempData["AuthorError"]</div>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="FormBook.Title" class="control-label"></label>
+                <input asp-for="FormBook.Title" class="form-control" />
+                <span asp-validation-for="FormBook.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FormBook.Descr" class="control-label"></label>
+                <input asp-for="FormBook.Descr" class="form-control" />
+                <span asp-validation-for="FormBook.Descr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FormBook.Category" class="control-label"></label>
+                <select asp-for="CategoryID" class="form-control" asp-items="@Model.CategorySelect">
+                </select>
+                <span asp-validation-for="CategoryID" class="text-danger" />
+                @if (TempData["CategoryError"] != null)
+                {
+                    <div class="alert alert-danger" role="alert">@TempData["CategoryError"]</div>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Cover" class="control-label"></label>
+                <input asp-for="@Model.Cover" class="form-control" type="file"/>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Save Edit" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

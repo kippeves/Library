@@ -1,0 +1,48 @@
+﻿@page "{handler?}/{order?}"
+@model UI.Pages.Category.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="container mt-4">
+    <h1>Categories</h1>
+    <hr />
+    <ul style="margin:0;padding:0;list-style:none;">
+        <li style="border-right:1px dotted gray; display:inline; margin-right:0.25rem;">
+            @if (@Model.Sort!="asc")
+            {
+                <a asp-page-handler="Sort" asp-route-order="Asc">Ascending</a>
+            } else {
+                @:Ascending
+            }
+        </li>
+        <li style="display:inline;">
+            @if (@Model.Sort!="desc")
+            {
+                <a asp-page-handler="Sort" asp-route-order="Desc">Descending</a>
+            } else 
+            {
+                @:Descending
+            }
+        </li>
+    </ul>
+    <hr />
+
+    <table class="table">
+        <tbody>
+            @foreach (var item in Model.Categories) 
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <a asp-page="./Details" asp-route-id="@item.Id">List Books</a> |
+                        <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

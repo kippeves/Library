@@ -1,0 +1,76 @@
+﻿@page
+@model UI.Pages.Book.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="container mt-4">
+    <hr />
+    <ul style="margin:0;padding:0;list-style:none;">
+        <li style="border-right:1px dotted gray; display:inline; margin-right:0.25rem;">
+            @if (@Model.Sort!="asc")
+            {
+                <a asp-page-handler="Sort" asp-route-order="Asc">Ascending</a>
+            } else {
+                @:Ascending
+            }
+        </li>
+        <li style="display:inline;">
+            @if (@Model.Sort!="desc")
+            {
+                <a asp-page-handler="Sort" asp-route-order="Desc">Descending</a>
+            } else 
+            {
+                @:Descending
+            }
+        </li>
+    </ul>
+    <hr />
+    <div class="d-flex flex-fill flex-wrap m-auto">
+    @foreach (var book in Model.Books)
+    {
+        <div class="card m-1" style="min-width:16rem; max-width:16rem">
+            <a asp-page="/Book/Details" asp-route-id="@book.Id">
+                <img src="~/img/book/@book.Cover" asp-append-version="true" class="card-img-top p-3" alt="...">
+            </a>
+            <div class="card-header">
+            @if (book.Author.Count() == 1)
+            {
+                @(book.Author.First().FirstName + " " + book.Author.First().LastName)
+            } 
+                else
+            {
+                @foreach(var author in book.Author){
+                    if (author != book.Author.Last()) {
+                        @(author.FullName+", ")
+                    } else
+                    {
+                        @(author.FullName)
+                    }
+                }
+            }
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">
+                    @book.Title
+                </h5>
+                <p class="card-text">
+                    @book.Descr
+                </p>
+            </div>
+            <div class="card-footer">
+            @foreach(var cat in book.Category)
+            {
+                if (cat != book.Category.Last()) { 
+                    @(cat.Name+", ")
+                }
+                    else
+                {
+                    @cat.Name
+                }
+            }
+            </div>
+        </div>
+    }
+    </div>
+</div>

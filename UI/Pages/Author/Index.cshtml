@@ -1,0 +1,54 @@
+﻿@page "{handler?}/{order?}"
+@model UI.Pages.Author.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="container mt-4">
+    <h1>Authors</h1>
+    <hr />
+    <ul style="margin:0;padding:0;list-style:none;">
+        <li style="border-right:1px dotted gray; display:inline; margin-right:0.25rem;">
+            @if (@Model.Sort!="asc")
+            {
+                <a asp-page="Index" asp-page-handler="Sort" asp-route-order="Asc">Ascending</a>
+            } else {
+                @:<span class="unselectable">Ascending</span>
+            }
+        </li>
+        <li style="display:inline;">
+            @if (@Model.Sort!="desc")
+            {
+                <a asp-page="Index" asp-page-handler="Sort" asp-route-order="Desc">Descending</a>
+            } else 
+            {
+                @:<span class="unselectable">Descending</span>
+            }
+        </li>
+    </ul>
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model.Authors) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName), @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    <a asp-page="./Details" asp-route-id="@item.Id">List Books</a> |
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+                <td>(@item.Book.Count st. böcker)</td>
+            </tr>
+    }
+        </tbody>
+    </table>
+</div>

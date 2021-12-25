@@ -1,0 +1,56 @@
+﻿@page
+@model UI.Pages.Category.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>@Html.DisplayFor(model => model.Categories.Name)</h1>
+
+<div class="d-flex flex-fill flex-wrap m-auto">
+@foreach (var book in Model.Books)
+{
+    <div class="card m-1" style="min-width:16rem; max-width:16rem">
+        <a asp-page="/Book/Details" asp-route-id="@book.Id">
+            <img src="~/img/book/@book.Cover" asp-append-version="true" class="card-img-top p-3" alt="...">
+        </a>
+        <div class="card-header">
+        @if (book.Author.Count() == 1)
+        {
+            @(book.Author.First().FirstName + " " + book.Author.First().LastName)
+        } else
+        {
+            @foreach(var author in book.Author){
+                    if (author != book.Author.Last()) { 
+                        @(author.FullName+", ")
+                    } else
+                    {
+                        @author.FullName
+                    }
+                }
+        }
+        </div>
+        <div class="card-body">
+        <h5 class="card-title">@book.Title</h5>
+        <p class="card-text">@book.Descr</p>
+        </div>
+        <div class="card-footer">
+        @foreach(var cat in book.Category)
+        {
+            if (cat != book.Category.Last()) { 
+                        @(cat.Name+", ")
+                    } else
+                    {
+                        @cat.Name
+                    }
+        }
+        </div>
+    </div>
+}
+</div>
+
+
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Categories.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

@@ -1,0 +1,70 @@
+﻿@page "{id?}/{handler?}/{order?}"
+@model UI.Pages.Author.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+<div class="container mt-4">
+    <h1>@Model.Authors.FullName</h1>
+    <hr />
+    <div style="display:inline-block;">
+        <ul style="margin:0;padding:0;list-style:none;">
+            <li style="border-right:1px dotted gray; display:inline; margin-right:0.25rem;">
+                @if (@Model.Sort!="asc")
+                {
+                    <a asp-page-handler="Sort" asp-route-id="@Model.Authors.Id" asp-route-order="Asc">Ascending</a>
+                } else {
+                    @:<span class="unselectable">Ascending</span>
+                }
+            </li>
+            <li style="display:inline;">
+                @if (@Model.Sort!="desc")
+                {
+                    <a asp-page-handler="Sort" asp-route-id="@Model.Authors.Id" asp-route-order="Desc">Descending</a>
+                } else 
+                {
+                    @:<span class="unselectable">Descending</span>
+                }
+            </li>
+        </ul>
+    </div>
+    <hr />
+    <div class="d-flex flex-fill flex-wrap m-auto">
+    @foreach (var book in @Model.AuthorBooks)
+    {
+                <div class="card m-1" style="min-width:16rem; max-width:16rem">
+                    <img src="~/img/book/@book.Cover" asp-append-version="true" class="card-img-top p-3" alt="...">
+                    <div class="card-header">
+                    @if (book.Author.Count() == 1)
+                    {
+                        @(book.Author.First().FirstName + " " + book.Author.First().LastName)
+                    } else
+                    {
+                        @foreach(var author in book.Author){
+                                if (author != book.Author.Last()) { 
+                                    @(author.FullName+", ")
+                                } else
+                                {
+                                    @author.FullName
+                                }
+                            }
+                    }
+                    </div>
+                    <div class="card-body">
+                    <h5 class="card-title">@book.Title</h5>
+                    </div>
+                    <div class="card-footer">
+                        <div class="btn-group w-100" role="group" aria-label="Basic example">
+                            <a class="btn btn-success" asp-page="/Book/Details" asp-route-id="@book.Id">View</a>
+                            <a class="btn btn-warning" asp-page="/Book/Edit" asp-route-id="@book.Id">Edit</a>
+                            <a class="btn btn-danger"  asp-page="/Book/Remove" asp-route-id="@book.Id">Delete</a>
+                        </div>
+                    </div>
+                </div>
+    }
+    </div>
+    <div>
+        <a asp-page="./Edit" asp-route-id="@Model.Authors.Id">Edit</a> |
+        <a asp-page="./Index">Back to List</a>
+    </div>
+</div>
