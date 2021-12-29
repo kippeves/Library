@@ -7,9 +7,10 @@ namespace DB.Models
     {
         public int BookId { get; set; }
         public int AttributeId { get; set; }
+        public string Name => AttributeName.Name;
         public string Value { get; set; } = null!;
 
-        public virtual AttributesNames Names { get; set; } = null!;
+        public virtual AttributesNames AttributeName { get; set; } = null!;
         public virtual Books Book { get; set; } = null!;
     }
 }

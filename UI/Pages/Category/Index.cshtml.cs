@@ -24,7 +24,7 @@ namespace UI.Pages.Category
         public string Sort { get; set; }
         public async Task OnGetAsync()
         {
-            Categories = await _context.Categories.ToListAsync();
+            Categories = await _context.Categories.AsNoTracking().ToListAsync();
         }
 
         public async Task<IActionResult> OnGetSort(string order)

@@ -53,6 +53,7 @@ namespace UI.Pages.Book
 
         public async Task<IActionResult> OnPostAsync()
         {
+            _context.Attach(FormBook).State = EntityState.Added;
             if (!ModelState.IsValid)
             {
                 if (SelectedAuthor.Count == 0)
@@ -68,7 +69,7 @@ namespace UI.Pages.Book
                 }
             }
             if (Cover!=null)
-            { 
+            {
                 long size = Cover.Length;
 
                 if (Cover.Length > 0)
@@ -82,27 +83,20 @@ namespace UI.Pages.Book
                     FormBook.Cover = file;
                 }
             }
-
-            Books DbBook = await _context.Books
-                .Include("Author")
-                .Include("Category")
-                .SingleAsync(b => b.Id==FormBook.Id);
-
-            DbBook.Title = FormBook.Title;
-            DbBook.Cover = FormBook.Cover;
-            DbBook.Descr = FormBook.Descr;
-            DbBook.Author.Clear();
-            DbBook.Category.Clear();
-
-            SelectedAuthor.ToList().ForEach(i => 
-                DbBook.Author.Add(_context.Authors.Single(a => a.Id == i))
+            List<Authors> authors = new List<Authors>();
+            SelectedAuthor.ForEach(i =>
+                           authors.Add(_context.Authors.Single(a => a.Id == i))
             );
-
-            CategoryID.ToList().ForEach(i =>
-                DbBook.Category.Add(_context.Categories.Single(c => c.Id == i))
+            List<Categories> categories = new List<Categories>();
+            CategoryID.ForEach(i =>
+                           categories.Add(_context.Categories.Single(c => c.Id == i))
             );
-            _context.Update(DbBook);
-            await _context.SaveChangesAsync();
+            _context.Entry(FormBook).Collection(c => c.Author).Load();
+            _context.Entry(FormBook).Collection(c => c.Category).Load();
+            FormBook.Author = authors;
+            FormBook.Category = categories;
+            _context.Update(FormBook);
+            _context.SaveChanges();
             return RedirectToPage("/Book/Index");
         }
     }

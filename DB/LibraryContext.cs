@@ -35,7 +35,7 @@ namespace DB
                     .IsUnicode(false)
                     .HasColumnName("value");
 
-                entity.HasOne(d => d.Names)
+                entity.HasOne(d => d.AttributeName)
                     .WithMany(p => p.Values)
                     .HasForeignKey(d => d.AttributeId)
                     .HasConstraintName("FK__Attribute__Attri__75C27486");

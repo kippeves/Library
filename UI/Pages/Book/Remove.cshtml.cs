@@ -50,6 +50,6 @@ namespace UI.Pages.Book
                 _context.SaveChanges();
             }
             return RedirectToPage("/Book/Index");
-        }
+            }
     }
 }

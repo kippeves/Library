@@ -31,42 +31,35 @@ namespace UI.Pages.Book
                 return RedirectToPage("/Book/Index", new { id });
             } else return RedirectToPage("/Book/Index"); }
 
-        public async Task<IActionResult> OnGetAdd(int? id)
+        public IActionResult OnGetAdd(int? id)
         {
             if (id.HasValue)
             {
                     Attributes = new();
-                    Books = await _context.Books
-                        .Include(b => b.Attributes)
-                            .ThenInclude(a => a.Names)
-                        .Include(b => b.Author)
-                        .Include(b => b.Category)
-                        .AsNoTracking()
-                        .SingleAsync(b => b.Id == id.Value);
-                    Attributes.BookId = Books.Id;
-                    return Page();
+                    _context.Attach(Attributes).State = EntityState.Added;
+                    Attributes.BookId = id.Value;
+                    _context.Entry(Attributes).Reference(a => a.Book).Load();
+
+                return Page();
             }
             else return RedirectToPage("/Book/Index");
         }
 
         public IActionResult OnPostAddAsync() {
-            if (Attributes.Names.Name.Length < 20)
+
+            if (Attributes.AttributeName.Name.Length < 20)
             {
-                AttributesNames name = _context.AttributesNames.SingleOrDefault(a => a.Name.Trim().ToLower() == Attributes.Names.Name.Trim().ToLower());
+                AttributesNames name = _context.AttributesNames.SingleOrDefault(a => a.Name.Trim().ToLower() == Attributes.AttributeName.Name.Trim().ToLower());
                 if (name == null)
                 {
-                    name = Attributes.Names;
+                    name = Attributes.AttributeName;
                     _context.AttributesNames.Add(name);
-                    _context.SaveChanges();
                 }
-
+                Attributes.AttributeName = name;
                 Attributes UpdateAttribute = _context.Attributes.SingleOrDefault(a => a.BookId == Attributes.BookId && a.AttributeId == name.Id);
                 if (UpdateAttribute == null)
                 {
-                    UpdateAttribute = new();
-                    UpdateAttribute.AttributeId = name.Id;
-                    UpdateAttribute.BookId = Attributes.BookId;
-                    UpdateAttribute.Value = Attributes.Value;
+                    UpdateAttribute = Attributes;
                     _context.Attributes.Add(UpdateAttribute);
                 }
                 else
@@ -74,12 +67,10 @@ namespace UI.Pages.Book
                     UpdateAttribute.Value = Attributes.Value;
                     _context.Update(UpdateAttribute);
                 }
-
                 _context.SaveChanges();
-                return RedirectToPage("/Book/Details", new { id = UpdateAttribute.BookId });
-            }
-            else {
-                TempData["Name"] = Attributes.Names.Name;
+                return RedirectToPage("/Book/Details", new { id = Attributes.BookId });
+            } else {
+                TempData["Name"] = Attributes.Name;
                 TempData["Value"] = Attributes.Value;
                 TempData["CategoryAmountError"] = "Your attributename is too long. Maximum characters allowed is 20.";
                 return RedirectToPage("/Book/Attribute","Add", new { id = Attributes.BookId });

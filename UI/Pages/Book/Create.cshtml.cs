@@ -36,7 +36,7 @@ namespace UI.Pages.Book
         }
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
@@ -56,17 +56,19 @@ namespace UI.Pages.Book
             }
 
             foreach (int i in AuthorID)
-            { 
-                Books.Author.Add(_context.Authors.Single(a => a.Id == i));
+            {
+                Authors a = _context.Authors.Single(a => a.Id == i);
+                Books.Author.Add(a);
             }
 
             foreach (int i in CategoryID)
             {
-                Books.Category.Add(_context.Categories.Single(c => c.Id == i));
+                Categories c = _context.Categories.Single(c => c.Id == i);
+                Books.Category.Add(c);
             }
 
             _context.Books.Add(Books);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return RedirectToPage("/Book/Index");
         }

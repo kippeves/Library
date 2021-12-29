@@ -20,7 +20,7 @@ namespace UI.Pages.Author
 
         public async Task OnGetAsync()
         {
-            Authors = await _context.Authors.Include(a=>a.Book).ToListAsync();
+            Authors = await _context.Authors.AsNoTracking().Include(a=>a.Book).ToListAsync();
         }
 
         public async Task<IActionResult> OnGetSort(string order)

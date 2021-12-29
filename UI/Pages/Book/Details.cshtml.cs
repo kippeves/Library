@@ -1,8 +1,4 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DB;
 using DB.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +28,7 @@ namespace UI.Pages.Book
 
             Books = await _context.Books
                 .Include(a=>a.Attributes)
-                .ThenInclude(c=>c.Names)
+                    .ThenInclude(c=>c.AttributeName)
                 .Include(a=>a.Author)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
