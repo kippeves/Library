@@ -1,4 +1,5 @@
-﻿using DB;
+﻿using Castle.Core.Internal;
+using DB;
 using DB.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -28,12 +29,17 @@ namespace UI.Pages.Book
             .ToListAsync();
         }
 
-        public async Task<IActionResult> OnPostSearch() {
-            Books = await _context.Books
+        public async Task<IActionResult> OnPostSearch()
+        {
+            IQueryable<Books> temp = _context.Books
                 .Include("Author")
                 .Include("Category")
-                .Include("Attributes")
-            .Where(b => b.Title.ToLower().Contains(Term.ToLower())).ToListAsync();
+                .Include("Attributes");
+            if (!Term.IsNullOrEmpty()){
+                Books = await temp.Where(b => b.Title.ToLower().Contains(Term.ToLower())).ToListAsync();
+            } else{
+                Books = await temp.ToListAsync();
+            }
             return Page();
         }
 
